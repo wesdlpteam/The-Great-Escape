@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Great Escape: Circus Coding Academy</title>
+    <style>
+        :root {
+            --bg-color: #0b0914;
+            --card-bg: #171226;
+            --accent-gold: #ffb800;
+            --accent-pink: #ff2a75;
+            --accent-teal: #00f0ff;
+            --accent-purple: #9d4edd;
+            --text-color: #d3cce3;
+            --text-bright: #f5f3f9;
+            --locked-color: #3c315b;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: radial-gradient(rgba(255, 42, 117, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--text-bright);
+            margin-bottom: 5px;
+            font-size: 2.4rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(255, 42, 117, 0.5), 0 0 30px rgba(0, 240, 255, 0.2);
+        }
+
+        .subtitle {
+            color: #a29bfe;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        /* Dashboard / Ringmaster's Scoreboard */
+        .dashboard {
+            background: linear-gradient(135deg, #241a41, #171226);
+            border: 2px dashed var(--accent-gold);
+            border-radius: 12px;
+            padding: 20px 40px;
+            display: flex;
+            gap: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 25px rgba(255, 184, 0, 0.15);
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8a7fa6;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-bright);
+            margin-top: 5px;
+        }
+
+        #score { color: var(--accent-gold); text-shadow: 0 0 10px rgba(255, 184, 0, 0.4); }
+        #rank { color: var(--accent-teal); }
+
+        /* Act Container */
+        .menu-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .course-section {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            padding: 25px;
+            border: 1px solid #2d224d;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2d224d;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .course-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .act1-title { color: var(--accent-teal); }
+        .act2-title { color: var(--accent-pink); }
+        .act3-title { color: var(--accent-purple); }
+
+        /* Carnival Performance Cards */
+        .challenge-card {
+            background-color: #1e1733;
+            border-left: 6px solid #2d224d;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s, opacity 0.2s;
+            position: relative;
+        }
+
+        .challenge-card:not(.locked):hover {
+            transform: translateX(6px);
+            background-color: #271e42;
+        }
+
+        .challenge-card.locked {
+            opacity: 0.25;
+            cursor: not-allowed;
+            background-color: #0c0914;
+            border-left-color: var(--locked-color) !important;
+        }
+
+        .challenge-card.completed {
+            background-color: rgba(0, 240, 255, 0.03);
+        }
+
+        .challenge-card.completed .challenge-name {
+            text-decoration: line-through;
+            color: #6a5e8c;
+        }
+
+        .checkbox-container {
+            margin-top: 2px;
+        }
+
+        .checkbox-custom {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #3c315b;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: transparent;
+            font-size: 0.9rem;
+        }
+
+        .challenge-card.completed .checkbox-custom {
+            background-color: var(--accent-teal);
+            border-color: var(--accent-teal);
+            color: #0b0914;
+        }
+
+        .challenge-card.locked .checkbox-custom {
+            background-color: #1a1526;
+            border-color: #2d224d;
+            color: #4a3d73;
+            font-size: 0.8rem;
+        }
+
+        .challenge-content {
+            flex-grow: 1;
+        }
+
+        .challenge-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .challenge-name {
+            font-weight: bold;
+            font-size: 1.15rem;
+            color: var(--text-bright);
+        }
+
+        .points-tag {
+            font-size: 0.85rem;
+            background-color: #2d224d;
+            padding: 3px 10px;
+            border-radius: 12px;
+            color: var(--accent-gold);
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .challenge-desc {
+            font-size: 1rem;
+            margin: 0 0 10px 0;
+            color: #8a7fa6;
+            line-height: 1.4;
+        }
+
+        .challenge-twist {
+            font-size: 0.9rem;
+            margin: 0;
+            color: #ff9f43;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Grand Finale Modal */
+        #win-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(23, 18, 38, 0.98);
+            border: 3px solid var(--accent-gold);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(0,0,0,0.9);
+            z-index: 1000;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        #win-message h2 {
+            color: var(--accent-gold);
+            margin-top: 0;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #win-message p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--text-bright);
+        }
+
+        #win-message button {
+            background-color: var(--accent-gold);
+            color: #0b0914;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #win-message button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎪 The Great Escape: Circus Coding Academy 🍿</h1>
+        <div class="subtitle">Help the animals sneak out of the Big Top! You must perfect each escape challenge in sequential order to progress through the acts screen-free.</div>
+    </header>
+
+    <!-- Scoreboard Dashboard -->
+    <div class="dashboard">
+        <div class="stat-box">
+            <div class="stat-label">Audience Applause</div>
+            <div id="score" class="stat-value">0 Claps</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Acts Perfected</div>
+            <div id="completed-count" class="stat-value">0 / 6</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Circus Rank</div>
+            <div id="rank" class="stat-value">Juggler</div>
+        </div>
+    </div>
+
+    <!-- Acts Container -->
+    <div class="menu-container">
+
+        <!-- ACT 1: THE SIDE SHOWS -->
+        <section class="course-section" id="section-act1">
+            <div class="course-header">
+                <div class="course-title act1-title">🤹 Act 1: The Side Shows (Balancing & Mechanics)</div>
+            </div>
+            
+            <!-- Challenge 1 -->
+            <div class="challenge-card" id="task-0" onclick="handleCardClick(0, 100)" style="border-left-color: var(--accent-teal);">
+                <div class="checkbox-container"><div class="checkbox-custom" id="check-0">✓</div></div>
+                <div class="challenge-content">
+                    <div class="challenge-meta">
+                        <span class="challenge-name">1. The Midnight Breakout (The High-Wire Escape)</span>
+                        <span class="points-tag">+100 Claps</span>
+                    </div>
+                    <p class="challenge-desc">The acrobatic kangaroos are breaking out. Launch your Indi escape vehicle from a green tile, navigate a sharp right-angle turn around a nearby workshop chair, and stick a perfect landing inside a secret getaway zone (a small masking-tape box on the carpet).</p>
+                    <p class="challenge-twist">🎪 Ringmaster's Decree: Shhh! Don't wake the guards. You must integrate a yellow tile to safely decelerate Indi to a silent crawl immediately before it hits the brakes on the red tile to stop.</p>
+                </div>
+            </div>
+
+            <!-- Challenge 2 -->
+            <div class="challenge-card locked" id="task-1" onclick="handleCardClick(1, 100)" style="border-left-color: var(--accent-teal);">
+                <div class="checkbox-container"><div class="checkbox-custom" id="check-1">🔒</div></div>
+                <div class="challenge-content">
+                    <div class="challenge-meta">
+                        <span class="challenge-name">2. Scouting the Guard Patrol (Embodied Coding)</span>
+                        <span class="points-tag">+100 Claps</span>
+                    </div>
+                    <p class="challenge-desc">The monkeys need to scout the escape route without using any traceable tech. Lay down a 4-tile escape route layout on the floor, but keep Indi turned off. One partner closes their eyes to act as the undercover monkey, stepping out the moves called out by their lookout partner.</p>
+                    <p class="challenge-twist">🎪 Ringmaster's Decree: Rehearse and model the physical choreography with human bodies first to prove the pathway is safe before running the actual vehicle!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 2: CENTER RING FEATURE -->
+        <section class="course-section" id="section-act2">
+            <div class="course-header">
+                <div class="course-title act2-title">🎪 Act 2: Center Ring Feature (Choreography Hooks)</div>
+            </div>
+
+            <!-- Challenge 3 -->
+            <div class="challenge-card locked" id="task-2" onclick="handleCardClick(2, 250)" style="border-left-color: var(--accent-pink);">
+                <div class="checkbox-container"><div class="checkbox-custom" id="check-2">🔒</div></div>
+                <div class="challenge-content">
+                    <div class="challenge-meta">
+                        <span class="challenge-name">3. Cracking the Password Code (Zero-Prep Literacy)</span>
+                        <span class="points-tag">+250 Claps</span>
+                    </div>
+                    <p class="challenge-desc">The escape gate is locked with a code. Grab 5 random items sitting in the room (like a notebook, a coffee mug, or a pen). On a piece of scrap paper or a sticky note, write a simple phonics sound, sight word, or letter on each item and scatter them on the floor. Program Indi to steer past the decoy sounds and come to a complete stop next to the true password word.</p>
+                    <p class="challenge-twist">🎪 Ringmaster's Decree: The security locks require vocal authentication! As Indi rolls past, the co-drivers must deliver a live dramatic commentary out loud, reading or sounding out each checkpoint it passes to maintain stealth.</p>
+                </div>
+            </div>
+
+            <!-- Challenge 4 -->
+            <div class="challenge-card locked" id="task-3" onclick="handleCardClick(3, 250)" style="border-left-color: var(--accent-pink);">
+                <div class="checkbox-container"><div class="checkbox-custom" id="check-3">🔒</div></div>
+                <div class="challenge-content">
+                    <div class="challenge-meta">
+                        <span class="challenge-name">4. The Lion's Leap (Zero-Prep Numeracy)</span>
+                        <span class="points-tag">+250 Claps</span>
+                    </div>
+                    <p class="challenge-desc">The lions are mapping a winding path across the circus floor to build up momentum. Write the numbers 1 to 10 on separate post-it notes. Scatter them across the floor in a winding zig-zag or scattered matrix, keeping them in numerical order. Program Indi to start at post-it number 1, navigate the winding path in order, and come to a complete stop on post-it number 8.</p>
+                    <p class="challenge-twist">🎪 Ringmaster's Decree: The lions love to show off for the crowd! Indi is not allowed to just cruise past the numbers; it must execute a 45-degree stunt (Orange/Teal tile) or a grand victory spin (Purple tile) precisely on top of or beside the even-numbered post-it notes along the route.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 3: THE GRAND FINALE -->
+        <section class="course-section" id="section-act3">
+            <div class="course-header">
+                <div class="course-title act3-title">🔮 Act 3: The Grand Finale (Grand Illusions)</div>
+            </div>
+
+            <!-- Challenge 5 -->
+            <div class="challenge-card locked" id="task-4" onclick="handleCardClick(4, 400)" style="border-left-color: var(--accent-purple);">
+                <div class="checkbox-container"><div class="checkbox-custom" id="check-4">🔒</div></div>
+                <div class="challenge-content">
+                    <div class="challenge-meta">
+                        <span class="challenge-name">5. The Guard Tower Distraction (The Crash Finale)</span>
+                        <span class="points-tag">+400 Claps</span>
+                    </div>
+                    <p class="challenge-desc">The animals need a massive, noisy distraction to draw guards away from the gates. Program Indi to successfully navigate a winding path of Post-it notes on the floor, ending with a direct impact into a giant wooden block tower to knock it down with a satisfying crash!</p>
+                    <p class="challenge-twist">🎪 Ringmaster's Decree: The searchlights have jammed your inventory! The Green (Go) tile and the Red (Stop) tile are completely banned for this challenge. You must find a creative way to launch Indi screen-free, keep it moving along the path, and trigger the loud tower crash using only your remaining colors.</p>
+                </div>
+            </div>
+
+            <!-- Challenge 6 -->
+            <div class="challenge-card locked" id="task-5" onclick="handleCardClick(5, 400)" style="border-left-color: var(--accent-purple);">
+                <div class="checkbox-container"><div class="checkbox-custom" id="check-5">🔒</div></div>
+                <div class="challenge-content">
+                    <div class="challenge-meta">
+                        <span class="challenge-name">6. The Gate Timer (The Grand Escape)</span>
+                        <span class="points-tag">+400 Claps</span>
+                    </div>
+                    <p class="challenge-desc">You have made it to the final automated perimeter fence! Build a narrow escape tunnel out of your wooden blocks, leading out to freedom. The catch? The main security gate at the very end of the tunnel only stays open for a few seconds before slamming shut and locking forever.</p>
+                    <p class="challenge-twist">🎪 Ringmaster's Decree: The tunnel is rigged with security tech! You must place a differently coloured post-it note right in the middle of your tunnel floor to mark the laser sensor zone. You must program Indi to enter the tunnel at absolute maximum velocity (Green tile), but as it crosses that specific laser post-it, it must execute a mandatory stunt or spin (Purple or Orange tile) to disable the alarm, recover its footing, and blast through the final gate before the timer runs out!</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Grand Finale Celebration Modal -->
+    <div id="win-message">
+        <h2>🎪 Standing Ovation! 🎪</h2>
+        <p>You have unlocked every illusion, mastered the escape choreography, and successfully freed the animals! Your Prep and Year 1 teachers are officially equipped to run deep, screen-free computational thinking challenges tomorrow morning.</p>
+        <button onclick="resetApp()">Reset The Carnival Academy</button>
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let totalCompleted = 0;
+        
+        // Track compilation state (true = completed, false = incomplete)
+        let taskStates = [false, false, false, false, false, false];
+
+        const ranks = [
+            { score: 0, title: "Juggler" },
+            { score: 100, title: "Trapeze Artist" },
+            { score: 200, title: "Acrobat Leader" },
+            { score: 450, title: "Illusionist" },
+            { score: 700, title: "Ringmaster" },
+            { score: 1100, title: "Grand Escape Legend" },
+            { score: 1500, title: "Carnival Director Supreme" }
+        ];
+
+        function handleCardClick(index, points) {
+            // 1. Strict Gatekeeper: Check if this specific card is currently locked
+            if (index > 0 && !taskStates[index - 1] && !taskStates[index]) {
+                // If the previous task isn't completed AND this task isn't already completed, block action
+                alert("🔒 Halt! The Ringmaster decrees you must complete Challenge " + index + " before attempting this act!");
+                return;
+            }
+
+            const card = document.getElementById('task-' + index);
+            const checkbox = document.getElementById('check-' + index);
+
+            // Toggle active state
+            taskStates[index] = !taskStates[index];
+            
+            if (taskStates[index]) {
+                // Task is being completed
+                card.classList.add('completed');
+                checkbox.innerText = "✓";
+                currentScore += points;
+                totalCompleted++;
+            } else {
+                // Task is being un-completed
+                card.classList.remove('completed');
+                checkbox.innerText = "✓";
+                currentScore -= points;
+                totalCompleted--;
+                
+                // Cascade lock enforcement: Unchecking an early task re-locks everything past it
+                for (let i = index + 1; i < taskStates.length; i++) {
+                    if (taskStates[i]) {
+                        taskStates[i] = false;
+                        const futureCard = document.getElementById('task-' + i);
+                        const futurePoints = parseInt(futureCard.querySelector('.points-tag').innerText);
+                        currentScore -= futurePoints;
+                        totalCompleted--;
+                        futureCard.classList.remove('completed');
+                    }
+                }
+            }
+
+            updateLocksAndUI();
+        }
+
+        function updateLocksAndUI() {
+            // Run through all tasks to dynamically evaluate locked/unlocked classes
+            for (let i = 0; i < taskStates.length; i++) {
+                const card = document.getElementById('task-' + i);
+                const checkbox = document.getElementById('check-' + i);
+                
+                if (i === 0) {
+                    // Task 1 is always unlocked
+                    card.classList.remove('locked');
+                } else {
+                    // Subsequent tasks unlock ONLY if the immediate previous task is completed
+                    if (taskStates[i - 1]) {
+                        card.classList.remove('locked');
+                        if (!taskStates[i]) {
+                            checkbox.innerText = "✓"; // Ready to be checked
+                        }
+                    } else {
+                        card.classList.add('locked');
+                        checkbox.innerText = "🔒";
+                    }
+                }
+            }
+
+            // Update Dashboard Counters
+            document.getElementById('score').innerText = currentScore + " Claps";
+            document.getElementById('completed-count').innerText = totalCompleted + " / 6";
+            
+            // Calculate Rank
+            let activeRank = ranks[0].title;
+            for (let i = ranks.length - 1; i >= 0; i--) {
+                if (currentScore >= ranks[i].score) {
+                    activeRank = ranks[i].title;
+                    break;
+                }
+            }
+            document.getElementById('rank').innerText = activeRank;
+
+            // Trigger Win Window if all 6 are checked
+            if (totalCompleted === 6) {
+                document.getElementById('win-message').style.display = 'block';
+            } else {
+                document.getElementById('win-message').style.display = 'none';
+            }
+        }
+
+        function resetApp() {
+            taskStates = [false, false, false, false, false, false];
+            currentScore = 0;
+            totalCompleted = 0;
+            
+            document.querySelectorAll('.challenge-card').forEach(card => {
+                card.classList.remove('completed');
+            });
+            
+            document.getElementById('win-message').style.display = 'none';
+            updateLocksAndUI();
+        }
+        
+        // Initial setup on boot
+        updateLocksAndUI();
+    </script>
+</body>
+</html>

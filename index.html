@@ -33,7 +33,6 @@
             margin: 0 auto;
         }
 
-        /* Header & Title Layout */
         header {
             text-align: center;
             margin-bottom: 40px;
@@ -59,7 +58,6 @@
             margin: 0 auto;
         }
 
-        /* Stats Dashboard Panel */
         .dashboard {
             border: 2px dashed var(--neon-yellow);
             border-radius: 12px;
@@ -90,7 +88,6 @@
         #stat-acts { color: var(--text-main); }
         #stat-rank { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0, 242, 254, 0.4); }
 
-        /* Act Container */
         .act-container {
             background-color: var(--card-bg);
             border: 1px solid var(--border-purple);
@@ -112,7 +109,6 @@
             gap: 12px;
         }
 
-        /* Individual Task Layout */
         .task-row {
             background-color: var(--task-bg);
             border-left: 4px solid var(--neon-cyan);
@@ -131,7 +127,6 @@
             padding-top: 2px;
         }
 
-        /* Clickable custom check box */
         .custom-check {
             width: 24px;
             height: 24px;
@@ -194,7 +189,6 @@
             margin-bottom: 8px;
         }
 
-        /* Dynamic Landmark Input Framework styles */
         .landmark-config {
             background-color: #100b1d;
             border: 1px solid var(--border-purple);
@@ -237,7 +231,6 @@
             height: 38px;
         }
 
-        /* Matrix Table View */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -287,7 +280,6 @@
             color: #000;
         }
 
-        /* COMPLETED STATE */
         .task-row.completed {
             border-left-color: #2ed573;
             opacity: 0.7;
@@ -304,7 +296,6 @@
             color: #0c0813;
         }
 
-        /* LOCKED STATE */
         .task-row.locked {
             opacity: 0.25;
             pointer-events: none;
@@ -334,7 +325,6 @@
             display: block;
         }
 
-        /* CELEBRATION & TOAST ALERT SYSTEM */
         .celebration-overlay {
             position: fixed;
             top: 0;
@@ -400,7 +390,6 @@
             box-shadow: 0 8px 25px rgba(0, 242, 254, 0.6);
         }
 
-        /* Floating Promotion Toast Alert */
         .rank-toast {
             position: fixed;
             bottom: 30px;
@@ -679,10 +668,10 @@
                     </div>
                     <div class="setup-tag">📍 The Map Setup:</div>
                     <div class="task-desc" style="color: #bbb; margin-bottom: 15px;">
-                        The **Geographical Map of Melbourne** is laid out on the floor space, completely uncovered and ready for tactical planning. Take note of the six iconic local landmarks plotted across the urban street grid.
+                        The Geographical Map of Melbourne is laid out on the floor space, completely uncovered and ready for tactical planning. Take note of the six iconic local landmarks plotted across the urban street grid.
                     </div>
                     <div class="task-desc">
-                        The animals are loose in the city! To complete the ultimate challenge, your team must plan a complex rescue route across the streets of Melbourne. Place your vehicle at your chosen starting landmark. You must program Indi to drive continuously through the streets, successfully touching or crossing **as many different Melbourne landmarks as possible** before coming to a safe halt at your final sanctuary zone.
+                        The animals are loose in the city! To complete the ultimate challenge, your team must plan a complex rescue route across the streets of Melbourne. Place your vehicle at your chosen starting landmark. You must program Indi to drive continuously through the streets, successfully touching or crossing as many different Melbourne landmarks as possible before coming to a safe halt at your final sanctuary zone.
                     </div>
 
                     <div class="landmark-config">
@@ -690,12 +679,15 @@
                             <label style="font-weight: bold; color: var(--neon-yellow);">How many landmarks did you successfully visit?</label>
                             <input type="text" id="landmark-count" maxlength="1" placeholder="0" style="width: 60px; padding: 8px;" oninput="generateLandmarkCells()">
                         </div>
-                        <div class="landmark-grid" id="dynamic-landmark-container">
-                            </div>
+                        <div class="landmark-grid" id="dynamic-landmark-container"></div>
                     </div>
 
                     <div class="decree-box">
-                        🗺️ <strong>Guard Patrol Warning:</strong> Inventory limits are critically restricted! The city's digital grid is monitoring tile usage. Your team is **only permitted to use a maximum of 6 colour tiles total** on the entire map layout. You must carefully design, pivot, and optimize your path geometry to maximize your landmark score without using a 7th tile!
+                        🗺️ <strong>Guard Patrol Warning:</strong> Critical path restrictions are active! The metropolitan sector has strict algorithmic parameters:
+                        <ul style="margin: 5px 0 0 15px; padding: 0;">
+                            <li><strong>Strict Resource Budget:</strong> You are only permitted to use a maximum of 6 colour tiles total across the entire city layout. Maximize your landmark path choices without drawing a 7th tile!</li>
+                            <li><strong>Yarra Aquatic Barrier:</strong> The automated patrol network has flagged the river banks. Vehicles cannot navigate or pass over water elements. Your entire route must exist purely on solid ground networks!</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -711,7 +703,6 @@
         const matrixAnswers = { 1: false, 2: false, 3: false, 4: false, 5: false };
         let confettiInterval;
         
-        // Curated landmarks array mapping exactly to floor coordinates
         const melbourneLandmarks = [
             "MCG",
             "Arts Centre / NGV",
@@ -764,7 +755,6 @@
             }, 6000);
         }
 
-        // Generates dynamic select frameworks containing the exact localized landmarks list
         function generateLandmarkCells() {
             const container = document.getElementById('dynamic-landmark-container');
             const countInput = document.getElementById('landmark-count').value.trim();
@@ -773,14 +763,12 @@
             const count = parseInt(countInput);
             if (isNaN(count) || count <= 0) return;
 
-            // Cap inputs dynamically at 6 maximum to strictly align with floor map reality
             const absoluteCap = Math.min(count, 6);
 
             for (let i = 1; i <= absoluteCap; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('landmark-cell');
                 
-                // Build options list cleanly from local variables
                 let optionsHtml = '<option value="" disabled selected>-- Select Visited Landmark --</option>';
                 melbourneLandmarks.forEach(landmark => {
                     optionsHtml += `<option value="${landmark}">${landmark}</option>`;

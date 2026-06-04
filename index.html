@@ -3,338 +3,795 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sphero Indi: The Great Big Top Breakout</title>
+    <title>The Great Escape: Animal Resistance Academy</title>
     <style>
         :root {
-            --bg-color: #121214;
-            --card-bg: #1a1a1e;
-            --border-color: #2d2d34;
-            --text-color: #e4e4e7;
-            --text-muted: #a1a1aa;
-            --accent-primary: #ff4757;
-            --accent-secondary: #ffa502;
-            --accent-success: #2ed573;
-            --accent-blue: #1e90ff;
-            --accent-purple: #9b59b6;
+            --bg-color: #0c0813;
+            --card-bg: #130f22;
+            --task-bg: #1a142e;
+            --border-purple: #3d2b63;
+            --neon-pink: #ff477e;
+            --neon-cyan: #00f2fe;
+            --neon-yellow: #ffb800;
+            --text-main: #f1f0f5;
+            --text-muted: #8b8599;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 30px 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 20px;
         }
 
+        /* Header & Title Layout */
         header {
             text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 30px;
             margin-bottom: 40px;
         }
 
-        h1 {
-            color: var(--accent-primary);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        header h1 {
+            font-size: 2.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255, 71, 126, 0.6);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
 
-        h2 {
-            color: var(--accent-secondary);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            margin-top: 40px;
+        header p {
+            color: #9c8fc2;
+            font-style: italic;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        h3 {
-            color: var(--text-color);
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-        }
-
-        .briefing {
-            background-color: #1e1e24;
-            border-left: 4px solid var(--accent-primary);
+        /* Stats Dashboard Panel */
+        .dashboard {
+            border: 2px dashed var(--neon-yellow);
+            border-radius: 12px;
+            background-color: #120b24;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             padding: 20px;
-            border-radius: 4px;
-            margin-bottom: 30px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 0 20px rgba(255, 184, 0, 0.1);
         }
 
-        .task-card {
+        .stat-box h4 {
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .stat-box p {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        #stat-claps { color: var(--neon-yellow); text-shadow: 0 0 10px rgba(255, 184, 0, 0.4); }
+        #stat-acts { color: var(--text-main); }
+        #stat-rank { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0, 242, 254, 0.4); }
+
+        /* Act Container */
+        .act-container {
             background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 25px;
+            border: 1px solid var(--border-purple);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .act-title {
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            margin-top: 0;
             margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-purple);
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .warning-box {
-            background-color: #241c15;
-            border-left: 4px solid var(--accent-secondary);
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
+        /* Individual Task Layout */
+        .task-row {
+            background-color: var(--task-bg);
+            border-left: 4px solid var(--neon-cyan);
+            border-radius: 0 8px 8px 0;
+            padding: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
-        .setup-box {
-            background-color: #151c24;
-            border-left: 4px solid var(--accent-blue);
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            padding-top: 2px;
         }
 
-        ul {
-            padding-left: 20px;
+        /* Clickable custom check box */
+        .custom-check {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: transparent;
+            background: transparent;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
         }
 
-        li {
+        .task-body {
+            flex-grow: 1;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 10px;
         }
 
-        .score-badge {
-            display: inline-block;
-            background-color: #1c2e24;
-            color: var(--accent-success);
-            padding: 5px 12px;
-            border-radius: 20px;
+        .task-title {
+            font-size: 1.15rem;
             font-weight: bold;
-            font-size: 0.9rem;
-            border: 1px solid #234d34;
+            margin: 0;
+            color: var(--text-main);
         }
 
+        .points-badge {
+            background-color: #251633;
+            color: #d1b3ff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid #4f3370;
+        }
+
+        .decree-box {
+            color: #ff9f43;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .decree-box strong {
+            color: #ff9f43;
+        }
+
+        .setup-tag {
+            color: var(--neon-cyan);
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        /* Matrix Table View */
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            background-color: #151518;
-            border-radius: 6px;
+            background-color: #100b1d;
+            border-radius: 8px;
             overflow: hidden;
+            border: 1px solid var(--border-purple);
         }
 
         th, td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-purple);
         }
 
         th {
-            background-color: #202026;
-            color: var(--text-color);
-            font-weight: 600;
+            background-color: #1a122e;
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+            text-transform: uppercase;
         }
 
         input[type="text"] {
-            background-color: #2d2d34;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 6px 10px;
-            border-radius: 4px;
-            width: 60px;
-            text-align: center;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-        }
-
-        button {
-            background-color: var(--accent-blue);
+            background-color: #241a3e;
+            border: 1px solid var(--border-purple);
             color: white;
-            border: none;
-            padding: 6px 12px;
+            padding: 6px;
+            border-radius: 4px;
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .verify-btn {
+            background-color: #3d2b63;
+            color: white;
+            border: 1px solid var(--neon-cyan);
+            padding: 6px 14px;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #0077e6;
-        }
-
-        .status-cell {
             font-weight: bold;
+        }
+
+        .verify-btn:hover {
+            background-color: var(--neon-cyan);
+            color: #000;
+        }
+
+        /* COMPLETED STATE */
+        .task-row.completed {
+            border-left-color: #2ed573;
+            opacity: 0.7;
+        }
+
+        .task-row.completed .task-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task-row.completed .custom-check {
+            background-color: #2ed573;
+            border-color: #2ed573;
+            color: #0c0813;
+        }
+
+        /* LOCKED STATE */
+        .task-row.locked {
+            opacity: 0.25;
+            pointer-events: none;
+            border-left-color: #444;
+        }
+        
+        .task-row.locked .points-badge {
+            background-color: #222;
+            border-color: #333;
+            color: #666;
+        }
+
+        .lock-overlay {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 22px;
+            background: #221a35;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--neon-pink);
+            border: 1px solid var(--neon-pink);
+        }
+
+        .task-row.locked .lock-overlay {
+            display: block;
+        }
+
+        /* CELEBRATION & TOAST ALERT SYSTEM */
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(12, 8, 19, 0.95);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            width: 100px;
+            animation: fadeIn 0.5s ease forwards;
         }
 
-        .status-correct {
-            color: var(--accent-success);
+        .celebration-content {
+            background: linear-gradient(145deg, #1f143a, #0d081b);
+            border: 3px solid var(--neon-cyan);
+            border-radius: 24px;
+            padding: 50px;
+            max-width: 650px;
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.5);
+            transform: scale(0.7);
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        .status-incorrect {
-            color: var(--accent-primary);
+        .celebration-content h2 {
+            font-size: 3rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 20px rgba(255, 184, 0, 0.6);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .celebration-content h3 {
+            font-size: 1.8rem;
+            color: var(--neon-cyan);
+            margin-bottom: 20px;
+        }
+
+        .celebration-content p {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 30px;
+        }
+
+        .close-celebration-btn {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #0c0813;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
+            transition: all 0.2s;
+        }
+
+        .close-celebration-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.6);
+        }
+
+        /* Dynamic Pop-up Toast for Instant Rank Promotion Awareness */
+        .rank-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #241349, #13092b);
+            border: 2px solid var(--neon-yellow);
+            border-radius: 12px;
+            padding: 20px 25px;
+            box-shadow: 0 10px 40px rgba(255, 184, 0, 0.25);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .rank-toast.show {
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            font-size: 2.2rem;
+            animation: bounce 1s infinite alternate;
+        }
+
+        .toast-text h5 {
+            margin: 0;
+            color: var(--neon-yellow);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .toast-text p {
+            margin: 3px 0 0 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            opacity: 0.8;
+            border-radius: 2px;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popUp { to { transform: scale(1); } }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); top: 0; }
+            100% { transform: translateY(110vh) rotate(360deg); top: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>🏎️ Sphero Indi: The Great Big Top Breakout</h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem;">Professional Development Hackathon Workspace</p>
-        </header>
-
-        <div class="briefing">
-            <strong>Mission Briefing:</strong> The Ringmaster has locked the animals away, but the underground resistance has intercepted the security codes. Your mission is to use your Indi escape vehicles to navigate the obstacles, crack the educational codes, and guide the animals safely to freedom!
-        </div>
-
-        <!-- ACT 1 -->
-        <h2>🤹 Act 1: The Training Grounds</h2>
-
-        <div class="task-card">
-            <h3>Task 1: The Midnight Breakout (The High-Wire Escape)</h3>
-            <ul>
-                <li><strong>The Mission:</strong> The acrobatic kangaroos are breaking out. Launch your Indi escape vehicle from a green tile, navigate a sharp right-angle turn around a nearby workshop chair, and stick a perfect landing inside a secret getaway zone (a small masking-tape box on the carpet).</li>
-            </ul>
-            <div class="warning-box">
-                <strong>🦘 Guard Patrol Warning:</strong> Shhh! Don't wake the guards. You must integrate a yellow tile to safely decelerate Indi to a silent crawl <em>immediately before</em> it hits the brakes on the red tile to stop.
-            </div>
-            <div class="score-badge">+100 Intel</div>
-        </div>
-
-        <div class="task-card">
-            <h3>Task 2: Scouting the Guard Patrol (Alphabet Embodied Coding)</h3>
-            <ul>
-                <li><strong>The Mission:</strong> The monkeys need to map an escape route shaped like a giant secret signal. Work together to choose a capital letter from the alphabet that uses straight lines and sharp turns (like an <strong>L</strong>, a <strong>T</strong>, a <strong>C</strong>, or an <strong>E</strong>). Gather your colour tiles and lay them out on the floor to physically trace the exact shape of that letter.</li>
-            </ul>
-            <div class="warning-box">
-                <strong>🐒 Guard Patrol Warning:</strong> <strong>Keep the Indi car turned off!</strong> One partner must close their eyes to act as the "undercover monkey" standing at the start of your letter shape. The other partner acts as the lookout, guiding them. The walking partner must physically step along the alphabet track, shouting out each tile colour they land on and executing the correct physical movements (like a sharp 90-degree turn at the corners of an <strong>L</strong>) to prove the human logic works before you run the robot!
-            </div>
-            <div class="score-badge">+100 Intel</div>
-        </div>
-
-
-        <!-- ACT 2 -->
-        <h2>🎪 Act 2: Sector Infiltration (Zero-Prep Classroom Hooks)</h2>
-
-        <div class="task-card">
-            <h3>Task 1: Cracking the Syllable Code (The Rhythmic Lockdown)</h3>
-            <div class="setup-box">
-                <strong>The Station Setup:</strong> Head over to the designated <strong>Syllable Decoder Zone</strong> in the room. You will find the numbers <strong>1, 2, and 3</strong> laid out on Post-it notes across the carpet, alongside 5 trapped circus animal word cards (<em>Seal, Tiger, Clown, Juggler, Elephant</em>).
-            </div>
-            <ul>
-                <li><strong>The Mission:</strong> Choose one animal card at a time and type its syllable count into the verification grid below to bypass the mainframe's digital lock. Once you get a green tick, place your Indi escape car directly on top of that starting animal card. Look at where the matching numeric escape gate is located on the floor, and arrange your silicone colour tiles to code a path that steers Indi safely from the animal card to that exit gate.</li>
-            </ul>
-            <div class="warning-box">
-                <strong>🦭 Guard Patrol Warning:</strong> Rhythmic sound fields are active! As soon as your Indi car successfully navigates your track and comes to a complete stop on the correct number Post-it note, your team must instantly jump in to override the audio alarm by loudly chanting the word and clapping out its syllables (e.g., <em>"Ti-ger!"</em> 👏 👏) to officially open the gate!
-            </div>
-
-            <h4 style="margin-top: 25px; margin-bottom: 10px;">🖥️ Interactive Syllable Verification Matrix</h4>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0;">Teachers must input the syllable count below and hit check before coding their floor path:</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Animal Checkpoint</th>
-                        <th style="text-align: center;">Input Syllable Count</th>
-                        <th style="text-align: center;">Verification Action</th>
-                        <th style="text-align: center;">Logic Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>1. Seal</strong></td>
-                        <td style="text-align: center;"><input type="text" id="ans-1" maxlength="1"></td>
-                        <td style="text-align: center;"><button onclick="checkAnswer(1, 1)">Check</button></td>
-                        <td id="status-1" class="status-cell"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>2. Tiger</strong></td>
-                        <td style="text-align: center;"><input type="text" id="ans-2" maxlength="1"></td>
-                        <td style="text-align: center;"><button onclick="checkAnswer(2, 2)">Check</button></td>
-                        <td id="status-2" class="status-cell"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>3. Clown</strong></td>
-                        <td style="text-align: center;"><input type="text" id="ans-3" maxlength="1"></td>
-                        <td style="text-align: center;"><button onclick="checkAnswer(3, 1)">Check</button></td>
-                        <td id="status-3" class="status-cell"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>4. Juggler</strong></td>
-                        <td style="text-align: center;"><input type="text" id="ans-4" maxlength="1"></td>
-                        <td style="text-align: center;"><button onclick="checkAnswer(4, 2)">Check</button></td>
-                        <td id="status-4" class="status-cell"></td>
-                    </tr>
-                    <tr>
-                        <td><strong>5. Elephant</strong></td>
-                        <td style="text-align: center;"><input type="text" id="ans-5" maxlength="1"></td>
-                        <td style="text-align: center;"><button onclick="checkAnswer(5, 3)">Check</button></td>
-                        <td id="status-5" class="status-cell"></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="score-badge" style="margin-top: 10px;">+250 Intel Points</div>
-        </div>
-
-        <div class="task-card">
-            <h3>Task 2: The Lion's Leap (The Skip Counting Grid)</h3>
-            <div class="setup-box">
-                <strong>The Station Setup:</strong> Head over to the <strong>Numeracy Grid Zone</strong>. You will see a scattered field of Post-it notes stuck to the carpet, numbered clearly from <strong>1 to 10</strong> in a winding matrix layout across the floor.
-            </div>
-            <ul>
-                <li><strong>The Mission:</strong> The lions need to slip through a high-frequency security grid that only shuts down on an even count. Place your Indi car directly on <strong>Post-it note number 2</strong>. You must arrange your silicone colour tiles on the floor to code a path that skip counts by 2s, navigating Indi sequentially from <strong>2, to 4, to 6</strong>, and coming to a complete stop precisely on <strong>Post-it note number 8</strong>.</li>
-            </ul>
-            <div class="warning-box">
-                <strong>🐅 Guard Patrol Warning:</strong> The laser beams are sensitive to pacing! Indi is not allowed to just cruise between the targets; it must execute a mandatory <strong>45-degree stunt</strong> (using an Orange or Teal tile) or a <strong>grand victory spin</strong> (using a Purple tile) precisely on top of, or directly beside, every number in your skip counting sequence (2, 4, 6, and 8) to disrupt the sensor beams.
-            </div>
-            <div class="score-badge">+250 Intel Points</div>
-        </div>
-
-
-        <!-- ACT 3 -->
-        <h2>🔮 Act 3: The Grand Finale</h2>
-
-        <div class="task-card">
-            <h3>Task 1: The Great Habitat Run (Biological Sciences)</h3>
-            <div class="setup-box">
-                <strong>The Station Setup:</strong> Head over to the <strong>Biomes & Habitats Zone</strong>. On the floor, you will see three large destination zones marked clearly on large sheets of paper: <strong>The Ocean 🌊</strong>, <strong>The Rainforest 🌳</strong>, and <strong>The Desert 🌵</strong>. Nearby, you will find cards for three escaped circus animals: <strong>Seal 🦭</strong>, <strong>Monkey 🐒</strong>, and <strong>Camel 🐫</strong>.
-            </div>
-            <ul>
-                <li><strong>The Mission:</strong> The final security gates are closing! To complete the breakout, your team cannot just save one animal—you must return <strong>all 3 animals</strong> to their correct geographic homes simultaneously to win. Place an Indi car on each of the three animal cards and code three distinct pathways across the floor to steer them all safely into their native habitat zones.</li>
-            </ul>
-            <div class="warning-box">
-                <strong>🐒 Guard Patrol Warning:</strong> Biome terrain is unpredictable, and the guards are closing in! Before each Indi car reaches the safety of its habitat zone, your code must include a mandatory environmental adaptation:
-                <ul style="margin-top: 10px; margin-bottom: 0;">
-                    <li>The <strong>Monkey</strong> must hit a <strong>Blue tile (Slow)</strong> right before entering the thick, dense Rainforest.</li>
-                    <li>The <strong>Camel</strong> must hit an <strong>Orange tile (Fast)</strong> to blast across the open Desert sand.</li>
-                    <li>The <strong>Seal</strong> must hit a <strong>Purple tile (Celebration Spin)</strong> just as it dives into the Ocean!</li>
-                </ul>
-            </div>
-            <div class="score-badge">+500 Intel Points</div>
+    <div class="celebration-overlay" id="celebration-screen">
+        <div class="celebration-content">
+            <h2>🏆 OUTSTANDING! 🏆</h2>
+            <h3>SANCTUARY FREEDOM ACHIEVED</h3>
+            <p>Every single animal track has been perfectly verified, the mainframe is breached, and the zoo transport vehicles have made a clean getaway! You've reached the ultimate tier of the resistance network.</p>
+            <button class="close-celebration-btn" onclick="closeCelebration()">Return to Workspace</button>
         </div>
     </div>
 
+    <div class="rank-toast" id="rank-popup">
+        <div class="toast-icon" id="toast-emoji">🦦</div>
+        <div class="toast-text">
+            <h5>Resistance Rank Promoted!</h5>
+            <p id="toast-rank-name">Fledgling Meerkat 🦦</p>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <header>
+            <h1>🥷 Sphero Indi: The Great Big Top Breakout 🦧</h1>
+            <p>The Ringmaster has locked the animals away, but the underground resistance has intercepted the security codes. Perfect each escape challenge sequentially to break them out screen-free!</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="stat-box">
+                <h4>Gathered Intel</h4>
+                <p id="stat-claps">0 Points</p>
+            </div>
+            <div class="stat-box">
+                <h4>Sectors Cleared</h4>
+                <p id="stat-acts">0 / 5</p>
+            </div>
+            <div class="stat-box">
+                <h4>Resistance Rank</h4>
+                <p id="stat-rank">Fledgling Meerkat 🦦</p>
+            </div>
+        </div>
+
+        <div class="act-container" id="act-1">
+            <div class="act-title">🤹 Act 1: The Training Grounds (Balancing & Mechanics)</div>
+
+            <div class="task-row" id="task-1">
+                <div class="checkbox-container">
+                    <div class="custom-check" id="check-1" onclick="toggleTask(1, 100)">✔</div>
+                </div>
+                <div class="task-body">
+                    <div class="task-header">
+                        <h4 class="task-title">1. The Midnight Breakout (The High-Wire Escape)</h4>
+                        <span class="points-badge">+100 Points</span>
+                    </div>
+                    <div class="task-desc">
+                        The acrobatic kangaroos are breaking out. Launch your Indi escape vehicle from a green tile, navigate a sharp right-angle turn around a nearby workshop chair, and stick a perfect landing inside a secret getaway zone (a small masking-tape box on the carpet).
+                    </div>
+                    <div class="decree-box">
+                        🦘 <strong>Guard Patrol Warning:</strong> Shhh! Don't wake the guards. You must integrate a yellow tile to safely decelerate Indi to a silent crawl <em>immediately before</em> it hits the brakes on the red tile to stop.
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-row locked" id="task-2">
+                <div class="lock-overlay">🔒 Locked</div>
+                <div class="checkbox-container">
+                    <div class="custom-check" id="check-2" onclick="toggleTask(2, 100)">✔</div>
+                </div>
+                <div class="task-body">
+                    <div class="task-header">
+                        <h4 class="task-title">2. Scouting the Guard Patrol (Alphabet Embodied Coding)</h4>
+                        <span class="points-badge">+100 Points</span>
+                    </div>
+                    <div class="task-desc">
+                        The monkeys need to map an escape route shaped like a giant secret signal. Work together to choose a capital letter from the alphabet that uses straight lines and sharp turns (like an <strong>L</strong>, a <strong>T</strong>, a <strong>C</strong>, or an <strong>E</strong>). Gather your colour tiles and lay them out on the floor to physically trace the exact shape of that letter.
+                    </div>
+                    <div class="decree-box">
+                        🐒 <strong>Guard Patrol Warning:</strong> Keep the Indi car turned off! One partner must close their eyes to act as the "undercover monkey" standing at the start of your letter shape. The other partner acts as the lookout, guiding them. The walking partner must physically step along the alphabet track, shouting out each tile colour they land on and executing the correct physical movements (like a sharp 90-degree turn at the corners of an <strong>L</strong>) to prove the human logic works before you run the robot!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="act-container" id="act-2">
+            <div class="act-title">🎪 Act 2: Sector Infiltration (Zero-Prep Classroom Hooks)</div>
+
+            <div class="task-row locked" id="task-3">
+                <div class="lock-overlay">🔒 Locked</div>
+                <div class="checkbox-container">
+                    <div class="custom-check" id="check-3" onclick="toggleTask(3, 250)">✔</div>
+                </div>
+                <div class="task-body">
+                    <div class="task-header">
+                        <h4 class="task-title">3. Cracking the Syllable Code (The Rhythmic Lockdown)</h4>
+                        <span class="points-badge">+250 Points</span>
+                    </div>
+                    <div class="setup-tag">📍 The Station Setup:</div>
+                    <div class="task-desc" style="color: #bbb; margin-bottom: 15px;">
+                        Head over to the designated <strong>Syllable Decoder Zone</strong> in the room. You will find the numbers <strong>1, 2, and 3</strong> laid out on Post-it notes across the carpet, alongside 5 trapped circus animal word cards (<em>Seal, Tiger, Clown, Juggler, Elephant</em>).
+                    </div>
+                    <div class="task-desc">
+                        Choose one animal card at a time and type its syllable count into the verification grid below to bypass the mainframe's digital lock. Once you get a green tick, place your Indi escape car directly on top of that starting animal card. Look at where the matching numeric escape gate is located on the floor, and arrange your silicone colour tiles to code a path that steers Indi safely from the animal card to that exit gate.
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Animal Checkpoint</th>
+                                <th style="text-align: center;">Syllables</th>
+                                <th style="text-align: center;">Action</th>
+                                <th style="text-align: center;">Security Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Seal</strong></td>
+                                <td style="text-align: center;"><input type="text" id="ans-1" maxlength="1"></td>
+                                <td style="text-align: center;"><button class="verify-btn" onclick="checkMatrixAnswer(1, 1)">Verify</button></td>
+                                <td id="status-1" style="text-align: center; font-weight: bold;">--</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. Tiger</strong></td>
+                                <td style="text-align: center;"><input type="text" id="ans-2" maxlength="1"></td>
+                                <td style="text-align: center;"><button class="verify-btn" onclick="checkMatrixAnswer(2, 2)">Verify</button></td>
+                                <td id="status-2" style="text-align: center; font-weight: bold;">--</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Clown</strong></td>
+                                <td style="text-align: center;"><input type="text" id="ans-3" maxlength="1"></td>
+                                <td style="text-align: center;"><button class="verify-btn" onclick="checkMatrixAnswer(3, 1)">Verify</button></td>
+                                <td id="status-3" style="text-align: center; font-weight: bold;">--</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. Juggler</strong></td>
+                                <td style="text-align: center;"><input type="text" id="ans-4" maxlength="1"></td>
+                                <td style="text-align: center;"><button class="verify-btn" onclick="checkMatrixAnswer(4, 2)">Verify</button></td>
+                                <td id="status-4" style="text-align: center; font-weight: bold;">--</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5. Elephant</strong></td>
+                                <td style="text-align: center;"><input type="text" id="ans-5" maxlength="1"></td>
+                                <td style="text-align: center;"><button class="verify-btn" onclick="checkMatrixAnswer(5, 3)">Verify</button></td>
+                                <td id="status-5" style="text-align: center; font-weight: bold;">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="decree-box">
+                        🦭 <strong>Guard Patrol Warning:</strong> Rhythmic sound fields are active! As soon as your Indi car successfully navigates your track and comes to a complete stop on the correct number Post-it note, your team must instantly jump in to override the audio alarm by loudly chanting the word and clapping out its syllables (e.g., <em>"Ti-ger!"</em> 👏 👏) to officially open the gate!
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-row locked" id="task-4">
+                <div class="lock-overlay">🔒 Locked</div>
+                <div class="checkbox-container">
+                    <div class="custom-check" id="check-4" onclick="toggleTask(4, 250)">✔</div>
+                </div>
+                <div class="task-body">
+                    <div class="task-header">
+                        <h4 class="task-title">4. The Lion's Leap (The Skip Counting Grid)</h4>
+                        <span class="points-badge">+250 Points</span>
+                    </div>
+                    <div class="setup-tag">📍 The Station Setup:</div>
+                    <div class="task-desc" style="color: #bbb; margin-bottom: 15px;">
+                        Head over to the <strong>Numeracy Grid Zone</strong>. You will see a scattered field of Post-it notes stuck to the carpet, numbered clearly from <strong>1 to 10</strong> in a winding matrix layout across the floor.
+                    </div>
+                    <div class="task-desc">
+                        The lions need to slip through a high-frequency security grid that only shuts down on an even count. Place your Indi car directly on <strong>Post-it note number 2</strong>. You must arrange your silicone colour tiles on the floor to code a path that skip counts by 2s, navigating Indi sequentially from <strong>2, to 4, to 6</strong>, and coming to a complete stop precisely on <strong>Post-it note number 8</strong>.
+                    </div>
+                    <div class="decree-box">
+                        🐅 <strong>Guard Patrol Warning:</strong> The laser beams are sensitive to pacing! Indi is not allowed to just cruise between the targets; it must execute a mandatory <strong>45-degree stunt</strong> (using an Orange or Teal tile) or a <strong>grand victory spin</strong> (using a Purple tile) precisely on top of, or directly beside, every number in your skip counting sequence (2, 4, 6, and 8) to disrupt the sensor beams.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="act-container" id="act-3">
+            <div class="act-title">🔮 Act 3: The Grand Finale</div>
+
+            <div class="task-row locked" id="task-5">
+                <div class="lock-overlay">🔒 Locked</div>
+                <div class="checkbox-container">
+                    <div class="custom-check" id="check-5" onclick="toggleTask(5, 500)">✔</div>
+                </div>
+                <div class="task-body">
+                    <div class="task-header">
+                        <h4 class="task-title">5. The Great Habitat Run (Biological Sciences)</h4>
+                        <span class="points-badge">+500 Points</span>
+                    </div>
+                    <div class="setup-tag">📍 The Station Setup:</div>
+                    <div class="task-desc" style="color: #bbb; margin-bottom: 15px;">
+                        Head over to the <strong>Biomes & Habitats Zone</strong>. On the floor, you will see three large destination zones marked clearly on large sheets of paper: <strong>The Ocean 🌊</strong>, <strong>The Rainforest 🌳</strong>, and <strong>The Desert 🌵</strong>. Nearby, you will find cards for three escaped circus animals: <strong>Seal 🦭</strong>, <strong>Monkey 🐒</strong>, and <strong>Camel 🐫</strong>.
+                    </div>
+                    <div class="task-desc">
+                        The final security gates are closing! To complete the breakout, your team cannot just save one animal—you must return <strong>all 3 animals</strong> to their correct geographic homes simultaneously to win. Place an Indi car on each of the three animal cards and code three distinct pathways across the floor to steer them all safely into their native habitat zones.
+                    </div>
+                    <div class="decree-box">
+                        🐒 <strong>Guard Patrol Warning:</strong> Biome terrain is unpredictable, and the guards are closing in! Before each Indi car reaches the safety of its habitat zone, your code must include a mandatory environmental adaptation:
+                        <ul style="margin: 5px 0 0 15px; padding: 0;">
+                            <li>The <strong>Monkey</strong> must hit a <strong>Blue tile (Slow)</strong> right before entering the thick, dense Rainforest.</li>
+                            <li>The <strong>Camel</strong> must hit an <strong>Orange tile (Fast)</strong> to blast across the open Desert sand.</li>
+                            <li>The <strong>Seal</strong> must hit a <strong>Purple tile (Celebration Spin)</strong> just as it dives into the Ocean!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        function checkAnswer(id, correctValue) {
-            const userInput = document.getElementById('ans-' + id).value.trim();
-            const statusCell = document.getElementById('status-' + id);
+        let totalClaps = 0;
+        let actsPerfected = 0;
+        let lastRankName = "Fledgling Meerkat 🦦";
+        const matrixAnswers = { 1: false, 2: false, 3: false, 4: false, 5: false };
+        let confettiInterval;
+        
+        const ranks = [
+            { limit: 0, name: "Fledgling Meerkat 🦦", emoji: "🦦" },
+            { limit: 100, name: "Tactical Kangaroo 🦘", emoji: "🦘" },
+            { limit: 200, name: "Clever Monkey 🐒", emoji: "🐒" },
+            { limit: 450, name: "Strategic Camel 🐫", emoji: "🐫" },
+            { limit: 700, name: "Alpha Leader 🦁", emoji: "🦁" }
+        ];
+
+        function updateDashboard() {
+            document.getElementById('stat-claps').innerText = totalClaps + " Points";
+            document.getElementById('stat-acts').innerText = actsPerfected + " / 5";
             
-            if (userInput === '') {
-                statusCell.innerHTML = '';
-                return;
+            let currentRank = ranks[0].name;
+            let currentEmoji = ranks[0].emoji;
+            
+            for (let i = 0; i < ranks.length; i++) {
+                if (totalClaps >= ranks[i].limit) {
+                    currentRank = ranks[i].name;
+                    currentEmoji = ranks[i].emoji;
+                }
             }
             
-            if (parseInt(userInput) === correctValue) {
-                statusCell.innerHTML = '✔ Verified';
-                statusCell.className = 'status-cell status-correct';
-            } else {
-                statusCell.innerHTML = '❌ Jammed';
-                statusCell.className = 'status-cell status-incorrect';
+            document.getElementById('stat-rank').innerText = currentRank;
+
+            // Trigger Pop-up Toast only if rank has actually elevated to prevent scrolling up
+            if (currentRank !== lastRankName && totalClaps > 0) {
+                showRankToast(currentRank, currentEmoji);
+                lastRankName = currentRank;
             }
         }
+
+        // Floating Alert notification logic
+        function showRankToast(name, emoji) {
+            const toast = document.getElementById('rank-popup');
+            document.getElementById('toast-emoji').innerText = emoji;
+            document.getElementById('toast-rank-name').innerText = name;
+            
+            toast.classList.add('show');
+            
+            // Auto hide after 4 seconds of display
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        function evaluateLocks() {
+            for (let i = 1; i <= 4; i++) {
+                const currentRow = document.getElementById('task-' + i);
+                const nextRow = document.getElementById('task-' + (i + 1));
+                
+                if (nextRow) {
+                    if (currentRow.classList.contains('completed')) {
+                        nextRow.classList.remove('locked');
+                    } else {
+                        nextRow.classList.add('locked');
+                        if (nextRow.classList.contains('completed')) {
+                            toggleTask(i + 1, getTaskPoints(i + 1)); 
+                        }
+                    }
+                }
+            }
+        }
+
+        function getTaskPoints(id) {
+            if (id === 1 || id === 2) return 100;
+            if (id === 3 || id === 4) return 250;
+            if (id === 5) return 500;
+            return 0;
+        }
+
+        function toggleTask(id, points) {
+            const row = document.getElementById('task-' + id);
+            
+            if (!row.classList.contains('completed')) {
+                row.classList.add('completed');
+                totalClaps += points;
+                actsPerfected += 1;
+                
+                if (id === 5) {
+                    triggerMassiveCelebration();
+                }
+            } else {
+                row.classList.remove('completed');
+                totalClaps -= points;
+                actsPerfected -= 1;
+                
+                if (id === 3) {
+                    resetMatrixFramework();
+                }
+            }
+            
+            updateDashboard();
+            evaluateLocks();
+        }
+
+        function checkMatrixAnswer(rowId, correctValue) {
+            const val = document.getElementById('ans-' + rowId).value.trim();
+            const status = document.getElementById('status-' + rowId);
+            
+            if (parseInt(val) === correctValue) {
+                status.innerText = "✔ LINKED";
+                status.style.color = "#2ed573";
+                matrixAnswers[rowId] = true;
+                document.getElementById('ans-' + rowId).disabled = true;
+            } else {
+                status.innerText = "❌ JAMMED";
+                status.style.color = "#ff477e";
+                matrixAnswers[rowId] = false;
+            }
+
+            const allCorrect = Object.values(matrixAnswers).every(v => v === true);
+            const row = document.getElementById('task-3');
+            
+            if (allCorrect && !row.classList.contains('completed')) {
+                toggleTask(3, 250);
+            }
+        }
+
+        function resetMatrixFramework() {
+            for (let i = 1; i <= 5; i++) {
+                matrixAnswers[i] = false;
+                const inputEl = document.getElementById('ans-' + i);
+                const statusEl = document.getElementById('status-' + i);
+                if (inputEl) {
+                    inputEl.disabled = false;
+                    inputEl.value = '';
+                }
+                if (statusEl) {
+                    statusEl.innerText = '--';
+                    statusEl.style.color = 'inherit';
+                }
+            }
+        }
+
+        function triggerMassiveCelebration() {
+            const screen = document.getElementById('celebration-screen');
+            screen.style.display = 'flex';
+            
+            const colors = ['#00f2fe', '#ff477e', '#ffb800', '#2ed573', '#9b59b6'];
+            confettiInterval = setInterval(() => {
+                const conf = document.createElement('div');
+                conf.classList.add('confetti');
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.transform = `scale(${Math.random() * 1.5 + 0.5})`;
+                conf.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+                document.body.appendChild(conf);
+                
+                setTimeout(() => { conf.remove(); }, 3500);
+            }, 60);
+        }
+
+        function closeCelebration() {
+            document.getElementById('celebration-screen').style.display = 'none';
+            clearInterval(confettiInterval);
+        }
+
+        updateDashboard();
     </script>
 </body>
 </html>

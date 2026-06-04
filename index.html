@@ -194,6 +194,49 @@
             margin-bottom: 8px;
         }
 
+        /* Dynamic Landmark Input Framework styles */
+        .landmark-config {
+            background-color: #100b1d;
+            border: 1px solid var(--border-purple);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .landmark-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .landmark-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #241a3e;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-purple);
+        }
+
+        .landmark-cell label {
+            font-weight: bold;
+            color: var(--neon-cyan);
+            min-width: 90px;
+        }
+
+        .landmark-cell select.large-input {
+            background-color: #0c0813;
+            border: 1px solid var(--border-purple);
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            flex-grow: 1;
+            font-weight: bold;
+            height: 38px;
+        }
+
         /* Matrix Table View */
         table {
             width: 100%;
@@ -636,11 +679,21 @@
                     </div>
                     <div class="setup-tag">📍 The Map Setup:</div>
                     <div class="task-desc" style="color: #bbb; margin-bottom: 15px;">
-                        Unroll the **Geographical Map of Melbourne** onto the floor space. Identify the marked local landmarks scattered across the city grid (e.g., *Flinders Street Station, Royal Botanic Gardens, Melbourne Zoo, MCG*).
+                        The **Geographical Map of Melbourne** is laid out on the floor space, completely uncovered and ready for tactical planning. Take note of the six iconic local landmarks plotted across the urban street grid.
                     </div>
                     <div class="task-desc">
                         The animals are loose in the city! To complete the ultimate challenge, your team must plan a complex rescue route across the streets of Melbourne. Place your vehicle at your chosen starting landmark. You must program Indi to drive continuously through the streets, successfully touching or crossing **as many different Melbourne landmarks as possible** before coming to a safe halt at your final sanctuary zone.
                     </div>
+
+                    <div class="landmark-config">
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <label style="font-weight: bold; color: var(--neon-yellow);">How many landmarks did you successfully visit?</label>
+                            <input type="text" id="landmark-count" maxlength="1" placeholder="0" style="width: 60px; padding: 8px;" oninput="generateLandmarkCells()">
+                        </div>
+                        <div class="landmark-grid" id="dynamic-landmark-container">
+                            </div>
+                    </div>
+
                     <div class="decree-box">
                         🗺️ <strong>Guard Patrol Warning:</strong> Inventory limits are critically restricted! The city's digital grid is monitoring tile usage. Your team is **only permitted to use a maximum of 6 colour tiles total** on the entire map layout. You must carefully design, pivot, and optimize your path geometry to maximize your landmark score without using a 7th tile!
                     </div>
@@ -651,14 +704,23 @@
 
     </div>
 
-    <script {nonce}>
+    <script>
         let totalClaps = 0;
         let actsPerfected = 0;
         let lastRankName = "Fledgling Meerkat 🦦";
         const matrixAnswers = { 1: false, 2: false, 3: false, 4: false, 5: false };
         let confettiInterval;
         
-        // Ranks updated with the ultimate top-tier "Grand Pioneer" for clearing Melbourne
+        // Curated landmarks array mapping exactly to floor coordinates
+        const melbourneLandmarks = [
+            "MCG",
+            "Arts Centre / NGV",
+            "Myer Music Bowl",
+            "Rod Laver",
+            "AAMI Park",
+            "Fed Square"
+        ];
+
         const ranks = [
             { limit: 0, name: "Fledgling Meerkat 🦦", emoji: "🦦" },
             { limit: 100, name: "Tactical Kangaroo 🦘", emoji: "🦘" },
@@ -702,6 +764,36 @@
             }, 6000);
         }
 
+        // Generates dynamic select frameworks containing the exact localized landmarks list
+        function generateLandmarkCells() {
+            const container = document.getElementById('dynamic-landmark-container');
+            const countInput = document.getElementById('landmark-count').value.trim();
+            container.innerHTML = ''; 
+
+            const count = parseInt(countInput);
+            if (isNaN(count) || count <= 0) return;
+
+            // Cap inputs dynamically at 6 maximum to strictly align with floor map reality
+            const absoluteCap = Math.min(count, 6);
+
+            for (let i = 1; i <= absoluteCap; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('landmark-cell');
+                
+                // Build options list cleanly from local variables
+                let optionsHtml = '<option value="" disabled selected>-- Select Visited Landmark --</option>';
+                melbourneLandmarks.forEach(landmark => {
+                    optionsHtml += `<option value="${landmark}">${landmark}</option>`;
+                });
+                
+                cell.innerHTML = `
+                    <label>Stop #${i}:</label>
+                    <select class="large-input">${optionsHtml}</select>
+                `;
+                container.appendChild(cell);
+            }
+        }
+
         function evaluateLocks() {
             for (let i = 1; i <= 5; i++) {
                 const currentRow = document.getElementById('task-' + i);
@@ -735,7 +827,6 @@
                 totalClaps += points;
                 actsPerfected += 1;
                 
-                // Trigger Massive Celebration once they complete the new ultimate task (Task 6)
                 if (id === 6) {
                     triggerMassiveCelebration();
                 }

@@ -357,7 +357,7 @@
             box-shadow: 0 8px 25px rgba(0, 242, 254, 0.6);
         }
 
-        /* Dynamic Pop-up Toast for Instant Rank Promotion Awareness */
+        /* Floating Promotion Toast Alert */
         .rank-toast {
             position: fixed;
             bottom: 30px;
@@ -421,9 +421,9 @@
 
     <div class="celebration-overlay" id="celebration-screen">
         <div class="celebration-content">
-            <h2>🏆 OUTSTANDING! 🏆</h2>
-            <h3>SANCTUARY FREEDOM ACHIEVED</h3>
-            <p>Every single animal track has been perfectly verified, the mainframe is breached, and the zoo transport vehicles have made a clean getaway! You've reached the ultimate tier of the resistance network.</p>
+            <h2>🏆 LEGENDARY STATUS! 🏆</h2>
+            <h3>MELBOURNE BREAKOUT COMPLETED</h3>
+            <p>The sanctuary run was flawless! Not only did all the animals escape back to their native biomes, but they have successfully outmanoeuvred the guards across the entire city layout. You are an absolute master of screen-free coding algorithms.</p>
             <button class="close-celebration-btn" onclick="closeCelebration()">Return to Workspace</button>
         </div>
     </div>
@@ -450,7 +450,7 @@
             </div>
             <div class="stat-box">
                 <h4>Sectors Cleared</h4>
-                <p id="stat-acts">0 / 5</p>
+                <p id="stat-acts">0 / 6</p>
             </div>
             <div class="stat-box">
                 <h4>Resistance Rank</h4>
@@ -594,7 +594,7 @@
         </div>
 
         <div class="act-container" id="act-3">
-            <div class="act-title">🔮 Act 3: The Grand Finale</div>
+            <div class="act-title">🔮 Act 3: The Grand Finale & Victory Lap</div>
 
             <div class="task-row locked" id="task-5">
                 <div class="lock-overlay">🔒 Locked</div>
@@ -623,28 +623,54 @@
                     </div>
                 </div>
             </div>
+
+            <div class="task-row locked" id="task-6">
+                <div class="lock-overlay">🔒 Locked</div>
+                <div class="checkbox-container">
+                    <div class="custom-check" id="check-6" onclick="toggleTask(6, 500)">✔</div>
+                </div>
+                <div class="task-body">
+                    <div class="task-header">
+                        <h4 class="task-title">6. The Victory Lap: Melbourne Landmark Escape (Algorithm Optimization)</h4>
+                        <span class="points-badge">+500 Points</span>
+                    </div>
+                    <div class="setup-tag">📍 The Map Setup:</div>
+                    <div class="task-desc" style="color: #bbb; margin-bottom: 15px;">
+                        Unroll the **Geographical Map of Melbourne** onto the floor space. Identify the marked local landmarks scattered across the city grid (e.g., *Flinders Street Station, Royal Botanic Gardens, Melbourne Zoo, MCG*).
+                    </div>
+                    <div class="task-desc">
+                        The animals are loose in the city! To complete the ultimate challenge, your team must plan a complex rescue route across the streets of Melbourne. Place your vehicle at your chosen starting landmark. You must program Indi to drive continuously through the streets, successfully touching or crossing **as many different Melbourne landmarks as possible** before coming to a safe halt at your final sanctuary zone.
+                    </div>
+                    <div class="decree-box">
+                        🗺️ <strong>Guard Patrol Warning:</strong> Inventory limits are critically restricted! The city's digital grid is monitoring tile usage. Your team is **only permitted to use a maximum of 6 colour tiles total** on the entire map layout. You must carefully design, pivot, and optimize your path geometry to maximize your landmark score without using a 7th tile!
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
-    <script>
+    <script {nonce}>
         let totalClaps = 0;
         let actsPerfected = 0;
         let lastRankName = "Fledgling Meerkat 🦦";
         const matrixAnswers = { 1: false, 2: false, 3: false, 4: false, 5: false };
         let confettiInterval;
         
+        // Ranks updated with the ultimate top-tier "Grand Pioneer" for clearing Melbourne
         const ranks = [
             { limit: 0, name: "Fledgling Meerkat 🦦", emoji: "🦦" },
             { limit: 100, name: "Tactical Kangaroo 🦘", emoji: "🦘" },
             { limit: 200, name: "Clever Monkey 🐒", emoji: "🐒" },
             { limit: 450, name: "Strategic Camel 🐫", emoji: "🐫" },
-            { limit: 700, name: "Alpha Leader 🦁", emoji: "🦁" }
+            { limit: 700, name: "Alpha Leader 🦁", emoji: "🦁" },
+            { limit: 1200, name: "Grand Pioneer 🐨", emoji: "🐨" }
         ];
 
         function updateDashboard() {
             document.getElementById('stat-claps').innerText = totalClaps + " Points";
-            document.getElementById('stat-acts').innerText = actsPerfected + " / 5";
+            document.getElementById('stat-acts').innerText = actsPerfected + " / 6";
             
             let currentRank = ranks[0].name;
             let currentEmoji = ranks[0].emoji;
@@ -658,14 +684,12 @@
             
             document.getElementById('stat-rank').innerText = currentRank;
 
-            // Trigger Pop-up Toast only if rank has actually elevated to prevent scrolling up
             if (currentRank !== lastRankName && totalClaps > 0) {
                 showRankToast(currentRank, currentEmoji);
                 lastRankName = currentRank;
             }
         }
 
-        // Floating Alert notification logic
         function showRankToast(name, emoji) {
             const toast = document.getElementById('rank-popup');
             document.getElementById('toast-emoji').innerText = emoji;
@@ -673,14 +697,13 @@
             
             toast.classList.add('show');
             
-            // Auto hide after 4 seconds of display
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 4000);
+            }, 6000);
         }
 
         function evaluateLocks() {
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 5; i++) {
                 const currentRow = document.getElementById('task-' + i);
                 const nextRow = document.getElementById('task-' + (i + 1));
                 
@@ -700,7 +723,7 @@
         function getTaskPoints(id) {
             if (id === 1 || id === 2) return 100;
             if (id === 3 || id === 4) return 250;
-            if (id === 5) return 500;
+            if (id === 5 || id === 6) return 500;
             return 0;
         }
 
@@ -712,7 +735,8 @@
                 totalClaps += points;
                 actsPerfected += 1;
                 
-                if (id === 5) {
+                // Trigger Massive Celebration once they complete the new ultimate task (Task 6)
+                if (id === 6) {
                     triggerMassiveCelebration();
                 }
             } else {
